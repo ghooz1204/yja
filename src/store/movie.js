@@ -2,22 +2,29 @@ import { handleActions, createAction } from 'redux-actions';
 import { call, put, takeLatest } from "redux-saga/effects";
 import { getMovieList } from '../api/movie';
 
+import {startLoading, finishLoading} from './loading';
+
 const GET_MOVIE = 'movie/GET_MOVIE';
 const GET_MOVIE_SUCCESS = 'movie/GET_MOVIE_SUCCESS';
 const GET_MOVIE_FAILURE = 'movie/GET_MOVIE_FAILURE';
 
 export const getMovie = createAction(GET_MOVIE);
 
-export function *getMovieSaga(action) {
+export function *getMovieSaga() {
+    yield put(startLoading());
     try {
-        const response = yield call(getMovieList);
-        console.log(response);
+        const MOVIE_LIST = yield call(getMovieList);
+        yield put({
+            type: GET_MOVIE_SUCCESS,
+            payload: MOVIE_LIST
+        })
     } catch (e) {
         yield put({
             type: GET_MOVIE_FAILURE,
             error: e
         })
     }
+    yield put(finishLoading());
 }
 
 export function *movieSaga() {
@@ -29,21 +36,14 @@ const initialState = {
     error: false
 }
 
-const movie = handleActions(
-    {
-        [GET_MOVIE]: (state, action) => ({
-            ...state,
-            loading: true
-        }),
+const movie = handleActions({
         [GET_MOVIE_SUCCESS]: (state, action) => ({
             ...state,
-            ...action.payload,
-            loading: false
+            movieList: action.payload,
         }),
         [GET_MOVIE_FAILURE]: (state, action) => ({
             ...state,
             error: action.payload,
-            loading: false
         })
     },
     initialState

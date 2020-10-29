@@ -1,10 +1,12 @@
-import { combineReducers } from "redux";
-import { all } from "redux-saga/effects";
+import { combineReducers } from 'redux';
+import { all } from 'redux-saga/effects';
 
 import movie, { movieSaga } from './movie';
+import loading from './loading';
 
 const rootReducer = combineReducers({
-    movie
+    movie,
+    loading
 });
 
 export function* rootSaga() {

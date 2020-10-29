@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { applyMiddleware, createStore } from "redux";
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
+import { composeWithDevTools } from "redux-devtools-extension";
 
 import rootReducer, { rootSaga } from './store';
 /* Redux */
@@ -15,7 +16,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     rootReducer,
-    applyMiddleware(sagaMiddleware)
+    composeWithDevTools(applyMiddleware(sagaMiddleware))
 );
 
 sagaMiddleware.run(rootSaga);
